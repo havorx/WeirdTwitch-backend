@@ -4,9 +4,11 @@
  * Module dependencies.
  */
 
-const app = require('../src/app');
-const debug = require('debug')('final-year-project-backend:server');
-const http = require('http');
+import app from '../src/app.js';
+import debugLib from 'debug';
+// import {initializeSocketIO} from '../src/socketIO/socketIO.js';
+
+const debug = debugLib('final-year-project-backend:server');
 
 /**
  * Get port from environment and store in Express.
@@ -18,8 +20,15 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
+import http from 'http';
+import {Server} from 'socket.io';
 
-const server = http.createServer(app);
+export const server = http.createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -59,8 +68,8 @@ function onError(error) {
   }
 
   const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+      ? 'Pipe ' + port
+      : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -84,7 +93,8 @@ function onError(error) {
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log(`Listening on http://localhost:${port}/`);
 }

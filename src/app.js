@@ -1,36 +1,50 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const session = require("express-session");
-const passport = require("passport");
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import initializeStrategy from './auth/PassportStrategy.js';
+import connect from './config/database.js';
 
-const route = require('./routes/routing');
+// const initializeSocketIO = require('./socketIO/socketIO');
+
+import route from './routes/routes.js';
 
 // Connect db
-const db = require('./config/database');
-db.connect();
+
+connect();
 
 const app = express();
 
-// Authentication
-app.use(session({secret: "cats", resave: false, saveUninitialized: true}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(function (req, res, next) {
-    res.locals.currentUser = req.user;
-    next();
-});
+const whitelist = process.env.WHITELISTED_DOMAINS
+    ? process.env.WHITELISTED_DOMAINS.split(',')
+    : [];
 
-app.use(logger('dev'))
-app.use(cors());
+const corsOptions = {
+  origin: function(origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(logger('dev'));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
+/*const __dirname = path.resolve(path.dirname(''));
+app.use(express.static(path.join(__dirname, 'public')));*/
+
+// passportJS authentication
+initializeStrategy(app);
 
 // Routing
 route(app);
 
-module.exports = app;
+// initializeSocketIO(server);
+export default app;
