@@ -1,7 +1,6 @@
 import express from 'express';
 import Category from '../models/Category.js';
 import User from '../models/User.js';
-import {verifyUser} from '../auth/authenticate.js';
 
 const router = express.Router();
 
@@ -15,6 +14,17 @@ router.get('/all-user', async (req, res, next) => {
       });
 
     } else res.json(users);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.patch('/create-admin', async (req, res, next) => {
+  try {
+    User.findOneAndUpdate({username: req.body.username}, {role: req.body.role}, {new: true},
+        (err, updated) => {
+          res.json(updated);
+        });
   } catch (err) {
     return next(err);
   }
@@ -35,7 +45,7 @@ router.get('/view-category', async (req, res, next) => {
   }
 });
 
-router.post('/add-category', verifyUser, async (req, res, next) => {
+router.post('/add-category', async (req, res, next) => {
   const category = new Category({
     categoryName: req.body.categoryName,
     description: req.body.description,

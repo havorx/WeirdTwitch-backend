@@ -4,31 +4,27 @@ const Schema = mongoose.Schema;
 
 const Room = new Schema({
   // _id: Schema.Types.ObjectId,
-  roomID: {
+/*  roomID: {
     type: Number,
     required: true,
     max: 999999999,
     unique: true,
-  },
+  },*/
   roomName: {
     type: String,
     required: true,
     max: 256,
-  },
-  roomStatus: {
-    type: Number,
-    required: true,
-    max: 1,
   },
   roomLanguage: {
     type: Number,
     required: true,
     max: 1,
   },
-    roomHost: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
+  description: {
+    type: String,
+    required: true,
+    max: 1000,
+  },
 });
 
 export default mongoose.model('Room', Room);

@@ -1,40 +1,46 @@
 import express from 'express';
 import Room from '../models/Room.js';
-import {createRoom, joinRoom, leaveRoom} from '../socketIO/socketIO.js';
+import {verifyUser} from '../auth/authenticate.js';
+// import {createRoom} from '../socketIO/socketIO.js';
 
 const router = express.Router();
 
 router.post('/create-room', async (req, res, next) => {
   const host = res.locals.currentUser;
+  // console.log(host.username);
   const room = new Room({
-    roomID: req.body.roomID,
+    // roomID: req.body.roomID,
     roomName: req.body.roomName,
-    roomStatus: req.body.roomStatus,
-    roomLanguage: req.body.roomLanguage,
-    roomHost: host._id,
+    roomDescription: req.body.roomDescription,
+    roomHost: req.body.roomHost,
   });
   try {
     await room.save();
-    await createRoom(req.body.roomID);
+    // await createRoom();
     res.sendStatus(200);
   } catch (err) {
     return next(err);
   }
 });
 
-router.get('/all-room', async (req, res) => {
-  console.log(res.locals.currentUser);
-  const rooms = await Room.find({}).populate('roomHost', 'username').exec();
-  if (!rooms) {
-    return res.status(400).send({
-      'message': 'not found',
-    });
-  } else
-    res.json(rooms);
+router.delete('/delete-room', verifyUser, async (req, res, next) => {
+ await Room.deleteOne({roomName: req.body.roomName}, err => {
+    if (err) {
+      next(err);
+    } else
+      res.status(200);
+      res.json('deleted');
+  })
+
 });
 
-router.get('/join-room/:roomID', async (req, res) => {
-  const roomID = req.params.roomID;
+router.get('/all-room', async (req, res) => {
+  console.log(res.locals.currentUser);
+
+});
+
+router.get('/join-room', async (req, res) => {
+  const roomID = req.body.roomName;
   const room = await Room.findOne({roomID: roomID}).exec();
   if (!room) {
     res.status(400).send({

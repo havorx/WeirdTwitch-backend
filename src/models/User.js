@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
-import passport from 'passport';
 
 const Schema = mongoose.Schema;
 
@@ -12,22 +11,33 @@ const Session = new Schema({
 });
 
 const User = new Schema({
-/*  email: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true,
+  /*  email: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },*/
+  credits: {
+    type: Number,
+    default: 0,
   },
-  username: {
+  role: {
     type: String,
-    unique: true,
-    required: true,
-    trim: true,
+    default: null,
   },
-  password: {
-    type: String,
-    required: true,
-  },*/
+  category: {
+    type: [{type:Schema.Types.ObjectId, ref: 'Category'}],
+  },
   authStrategy: {
     type: String,
     default: 'local',
@@ -46,6 +56,5 @@ User.set('toJSON', {
 });
 
 User.plugin(passportLocalMongoose);
-
 
 export default mongoose.model('User', User);
