@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.post('/refreshToken', (req, res, next) => {
   const {signedCookies} = req;
-  const {refreshToken} = signedCookies;
-
+  const {refreshToken} = req.body;
+  console.log(refreshToken);
   if (refreshToken) {
     try {
       const payload = jwt.verify(refreshToken,
@@ -28,21 +28,22 @@ router.post('/refreshToken', (req, res, next) => {
               );
 
               if (refreshTokenIndex === -1) {
-                res.statusCode = 401;
-                res.send('Unauthorized');
+                res.statusCode = 404;
+                res.send('refreshToken not found');
               } else {
-                const token = getToken({_id: user._id, username: user.username, role: user.role});
+                const token = getToken(
+                    {_id: user._id, username: user.username, role: user.role});
 
                 // If the refresh token exists, then create new one and replace it.
                 const newRefreshToken = getRefreshToken({_id: userId});
                 user.refreshToken[refreshTokenIndex] = {refreshToken: newRefreshToken};
                 user.save((err) => {
                   if (err) {
-                    res.statusCode = 500;
-                    res.send(err);
+                    next(err);
                   } else {
                     res.cookie('refreshToken', newRefreshToken, cookieOptions);
-                    res.send({success: true, token});
+                    res.send(
+                        {success: true, token, refreshToken: newRefreshToken});
                   }
                 });
               }
@@ -53,10 +54,10 @@ router.post('/refreshToken', (req, res, next) => {
           err => next(err),
       );
     } catch (err) {
-      res.status(401).send('Unauthorized');
+      res.sendStatus(500);
     }
   } else {
-    res.status(401).send('refreshToken not found');
+    res.status(400).send('no refreshToken in request');
   }
 });
 
@@ -64,19 +65,28 @@ router.post('/signup', async (req, res, next) => {
   const newUser = new User({
     username: req.body.username,
     role: null,
-  })
+    fullName: req.body.fullName,
+  });
   try {
     await User.register(newUser,
         req.body.password, async (err, user) => {
           if (!err) {
-            const token = getToken({_id: user._id, username:req.body.username, role: user.role});
+            const token = getToken(
+                {_id: user._id, username: user.username, role: user.role});
             const refreshToken = getRefreshToken({_id: user._id});
             user.refreshToken.push({refreshToken});
 
             await user.save(err => {
               if (!err) {
                 res.cookie('refreshToken', refreshToken, cookieOptions);
-                res.status(200).send({token, role: user.role});
+                res.status(200).
+                    send({
+                      refreshToken,
+                      token,
+                      userID: user._id,
+                      role: user.role,
+                      credits: user.credits,
+                    });
               } else {res.status(500).send(err);}
             });
           } else {res.status(500).send(err);}
@@ -97,7 +107,14 @@ router.post('/login', passport.authenticate('local'), async (
           await user.save(err => {
             if (!err) {
               res.cookie('refreshToken', refreshToken, cookieOptions);
-              res.status(200).send({token, role: user.role});
+              res.status(200).
+                  send({
+                    refreshToken,
+                    token,
+                    userID: user._id,
+                    role: user.role,
+                    credits: user.credits,
+                  });
             }
           });
         } catch (err) {
@@ -111,6 +128,7 @@ router.post('/login', passport.authenticate('local'), async (
 router.get('/logout', verifyUser, (req, res, next) => {
   const {signedCookies} = req;
   const {refreshToken} = signedCookies;
+  console.log(req.user._id);
   User.findById(req.user._id).then(
       async user => {
         const tokenIndex = user.refreshToken.findIndex(

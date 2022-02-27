@@ -14,6 +14,10 @@ const Category = new Schema({
     unique: true,
     required: true,
   },
+  followers: {
+    type: Number,
+    default: 0,
+  }
 });
 
 export default mongoose.model('Category', Category);

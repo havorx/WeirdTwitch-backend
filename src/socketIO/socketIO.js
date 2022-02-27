@@ -3,6 +3,7 @@ import {io} from '../../bin/www.js';
 let broadcaster;
 let chatRoomData = [];
 const connectedClient = [{}];
+let currentTopic = [];
 
 export function listeningSocketIO() {
   io.on('connection', socket => {
@@ -36,13 +37,30 @@ export function listeningSocketIO() {
 
     socket.on('join-room', ({roomName, username}) => {
       socket.join(roomName);
-      io.to(`${roomName}`).emit('host-update-chat', `${username} joined`);
+      // io.to(`${roomName}`).emit('host-update-chat', `${username} joined`);
+      io.to(`${roomName}`).emit('update-audience');
+      const roomTopic = currentTopic.filter(element =>
+          element.roomName === roomName);
+      io.to(`${roomName}`).emit('update-topic', roomTopic);
       console.log(`${username} join room ${roomName}`);
     });
 
-    socket.on('host-updated-chat', (message) => {
-      console.log(message);
-      io.to(roomName).emit('message-for-new-join', {message, roomName});
+    socket.on('leave-room', ({roomName, username}) => {
+      socket.leave(`${roomName}`);
+      io.to(`${roomName}`).emit('update-audience');
+      console.log(`${username} has left ${roomName}`);
+    });
+
+    socket.on('set-topic', ({topicName, topicDesc, roomName}) => {
+      io.to(`${roomName}`).emit('update-topic', {topicName, topicDesc});
+      currentTopic.push({topicName, topicDesc, roomName});
+      console.log(currentTopic);
+      console.log({topicName, topicDesc, roomName});
+    });
+
+    socket.on('end-room', ({roomName, username}) => {
+      io.in(`${roomName}`).socketsLeave(`${roomName}`);
+      console.log(`${username} end ${roomName}`);
     });
 
     //Client Sent a message

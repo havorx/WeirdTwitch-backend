@@ -10,6 +10,6 @@ export default function route(app) {
   app.use('/category', categoryRouter);
   app.use('/admin', adminRouter);
   app.use('/auth', authRouter);
-  app.use('/user-detail', userRouter);
+  app.use('/user', userRouter);
 }
 

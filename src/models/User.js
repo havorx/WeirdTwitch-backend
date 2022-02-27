@@ -17,16 +17,25 @@ const User = new Schema({
       required: true,
       trim: true,
     },
-    username: {
-      type: String,
-      unique: true,
-      required: true,
-      trim: true,
-    },
     password: {
       type: String,
       required: true,
     },*/
+  status: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true,
+  },
+  fullName: {
+    type: String,
+    default: '',
+  },
   credits: {
     type: Number,
     default: 0,

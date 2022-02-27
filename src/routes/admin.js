@@ -1,23 +1,9 @@
 import express from 'express';
 import Category from '../models/Category.js';
 import User from '../models/User.js';
+import Room from '../models/Room.js';
 
 const router = express.Router();
-
-router.get('/all-user', async (req, res, next) => {
-  try {
-    const users = await User.find({});
-
-    if (!users) {
-      return res.status(400).send({
-        'message': 'not found',
-      });
-
-    } else res.json(users);
-  } catch (err) {
-    return next(err);
-  }
-});
 
 router.patch('/create-admin', async (req, res, next) => {
   try {
@@ -29,6 +15,8 @@ router.patch('/create-admin', async (req, res, next) => {
     return next(err);
   }
 });
+
+
 
 router.get('/view-category', async (req, res, next) => {
   try {
