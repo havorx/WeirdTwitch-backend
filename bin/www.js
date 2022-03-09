@@ -14,7 +14,7 @@ const debug = debugLib('final-year-project-backend:server');
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '1280');
 app.set('port', port);
 
 /**
