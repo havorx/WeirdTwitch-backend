@@ -43,7 +43,7 @@ typings/
 .npm
 
 # IDEs and editors
-/.idea
+.idea/
 .project
 .classpath
 .c9/
