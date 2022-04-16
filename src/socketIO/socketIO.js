@@ -48,6 +48,7 @@ export function listeningSocketIO() {
     socket.on('leave-room', ({roomName, username}) => {
       socket.leave(`${roomName}`);
       io.to(`${roomName}`).emit('update-audience');
+
       console.log(`${username} has left ${roomName}`);
     });
 
@@ -67,6 +68,10 @@ export function listeningSocketIO() {
     socket.on('send-message', data => {
       io.to(`${data.roomName}`).emit('send-message', data);
       console.log(data);
+    });
+
+    socket.on('audio', data => {
+      io.to(`${data.roomName}`).emit('return-audio', data);
     });
 
     //Creating identity for new connected user

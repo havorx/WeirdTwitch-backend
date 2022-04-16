@@ -16,10 +16,6 @@ const User = new Schema({
       unique: true,
       required: true,
       trim: true,
-    },
-    password: {
-      type: String,
-      required: true,
     },*/
   status: {
     type: Boolean,

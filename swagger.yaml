@@ -1,0 +1,20 @@
+swagger: "2.0"
+info:
+  title: WeirdTwitch-backend
+  description: Title
+  version: 1.0.0
+host: localhost:1280
+schemes:
+  - http
+paths:
+  /rooms/create-room:
+    post:
+      summary: create a new room
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: roomName
+
+
+

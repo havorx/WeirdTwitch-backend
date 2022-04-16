@@ -23,7 +23,6 @@ app.set('port', port);
 import http from 'http';
 import {Server} from 'socket.io';
 import {listeningSocketIO} from '../src/socketIO/socketIO.js';
-// import {initializePeer} from '../src/services/peer.js';
 
 export const server = http.createServer(app);
 export const io = new Server(server, {

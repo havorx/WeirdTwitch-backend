@@ -22,9 +22,13 @@ const Room = new Schema({
     type: String,
     required: true,
   },
+  schedule: {
+    type: String,
+    default: null,
+  },
   members: {
-    type: [{type:Schema.Types.ObjectId, ref: 'User'}],
-  }
+    type: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  },
 });
 
 export default mongoose.model('Room', Room);
