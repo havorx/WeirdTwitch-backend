@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "set DEBUG=weirdtwitch-backend* & nodemon bin/www.js"
+    "start":"set DEBUG=weirdtwitch-backend* & node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.6",
