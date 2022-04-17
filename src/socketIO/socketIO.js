@@ -1,34 +1,10 @@
 import {io} from '../../bin/www.js';
-
-let broadcaster;
 let chatRoomData = [];
-const connectedClient = [{}];
 let currentTopic = [];
 
 export function listeningSocketIO() {
   io.on('connection', socket => {
     console.log('New client connected');
-
-    /*    let broadcaster;
-        socket.on('broadcaster', () => {
-          broadcaster = socket.id;
-          socket.broadcast.emit('broadcaster');
-        });
-        socket.on('watcher', () => {
-          socket.to(broadcaster).emit('watcher', socket.id);
-        });
-        socket.on('disconnect', () => {
-          socket.to(broadcaster).emit('disconnectPeer', socket.id);
-        });
-        socket.on('offer', (id, message) => {
-          socket.to(id).emit('offer', socket.id, message);
-        });
-        socket.on('answer', (id, message) => {
-          socket.to(id).emit('answer', socket.id, message);
-        });
-        socket.on('candidate', (id, message) => {
-          socket.to(id).emit('candidate', socket.id, message);
-        });*/
 
     socket.on('create-room', ({roomName, username}) => {
       socket.join(roomName);
@@ -79,31 +55,8 @@ export function listeningSocketIO() {
     //Clearing Chat room data from server
     socket.on('clear-chat', () => {
       chatRoomData = [];
-      console.log(chatRoomData);
       sendUpdatedChatRoomData(socket);
     });
-
-    /*    //webrtc event
-        socket.on('broadcaster', () => {
-          broadcaster = socket.id;
-          socket.broadcast.emit('broadcaster');
-        });
-        socket.on('watcher', () => {
-          socket.to(broadcaster).emit('watcher', socket.id);
-        });
-        socket.on('offer', (id, message) => {
-          socket.to(id).emit('offer', socket.id, message);
-        });
-        socket.on('answer', (id, message) => {
-          socket.to(id).emit('answer', socket.id, message);
-        });
-        socket.on('candidate', (id, message) => {
-          socket.to(id).emit('candidate', socket.id, message);
-        });
-        socket.on('disconnect', () => {
-          socket.to(broadcaster).emit('disconnectPeer', socket.id);
-        });*/
-
   });
 
 //Sending update chat room data to all connected clients
