@@ -17,7 +17,7 @@ const app = express();
 const whitelist = process.env.WHITELISTED_DOMAINS
     ? process.env.WHITELISTED_DOMAINS.split(',')
     : [];
-
+console.log(20, whitelist);
 const corsOptions = {
   origin: function(origin, callback) {
     if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -31,6 +31,7 @@ const corsOptions = {
 
 app.use(logger('dev'));
 app.use(cors());
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
