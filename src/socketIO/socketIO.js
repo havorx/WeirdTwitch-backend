@@ -1,4 +1,5 @@
 import {io} from '../../bin/www.js';
+
 let chatRoomData = [];
 let currentTopic = [];
 
@@ -9,6 +10,14 @@ export function listeningSocketIO() {
     socket.on('create-room', ({roomName, username}) => {
       socket.join(roomName);
       console.log(`${username} create ${roomName}`);
+    });
+
+    socket.on('send-audio', (data) => {
+      socket.broadcast.emit('board-cast-audio', data);
+    });
+
+    socket.on('disconnect', () => {
+      console.log(socket.id + ': disconnected');
     });
 
     socket.on('join-room', ({roomName, username}) => {

@@ -6,7 +6,7 @@ import logger from 'morgan';
 import initializeStrategy from './auth/PassportStrategy.js';
 import connect from './config/database.js';
 
-import route from './routes/routes.js';
+import route from './routes.js';
 
 // Connect db
 
