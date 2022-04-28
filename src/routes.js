@@ -1,4 +1,3 @@
-// import indexRouter from './index.js';
 import roomsRouter from './routes/roomsRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
