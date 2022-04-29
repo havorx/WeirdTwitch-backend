@@ -10,7 +10,7 @@ router.post('/signup', authController.signupUser);
 
 router.post('/login', authService.login, authController.loginUser);
 
-router.get('/logout', authService.verifyUser, authController.logoutUser);
+router.post('/logout', authService.verifyUser, authController.logoutUser);
 
 /*router.get('/account-detail', authService.verifyUser, (req, res, next) => {
   res.send(req);

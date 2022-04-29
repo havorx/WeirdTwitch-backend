@@ -30,7 +30,6 @@ export const io = new Server(server, {
     origin: '*',
   },
 });
-// initializePeer(server, app);
 listeningSocketIO();
 
 /**

@@ -51,9 +51,9 @@ export async function deleteUser(req, res, next) {
 
 export async function addCredit(req, res, next) {
   try {
-    const data = req.query;
-    const user = await userService.addCreditToUser(data);
-    res.status(200).send(user);
+    const data = req.body;
+    const result = await userService.processCreditToUser(data);
+    res.status(200).send(result);
   } catch (err) {
     next(err);
   }

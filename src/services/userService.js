@@ -51,22 +51,23 @@ export async function addCategoryToUser(data) {
 }
 
 export async function deleteUser(data) {
-  if (!data) {
-  }
+  if (!data) return {message: 'invalid input'};
+
   const user = await User.findByIdAndDelete(data.ID).exec();
-  return user ? user : {'message': 'user not found'};
+  return user ? user : {message: 'user not found'};
 }
 
-export async function addCreditToUser(data) {
-  if (!data) {
-    return 'invalid input';
-  }
-  const user = await User.findByIdAndUpdate(data.userID, {
-    credits: this.credits + data.credits,
-  }).exec();
-  if (user) {
-    return user;
-  } else {
-    return {'message': 'user not found'};
-  }
+export async function processCreditToUser(data) {
+  const {credits, userID} = data;
+  if (!credits && !userID) return {message: 'invalid input'};
+
+  const user = await User.findOneAndUpdate(
+      {_id: userID, credits: {$gte: credits}}, {
+        $inc: {credits: +credits},
+      }, {new: true}).exec();
+
+  const u = await User.findOne({_id: userID, credits: {$gte: credits}}).exec();
+  console.log(u);
+  if (!user) return {message: 'user not found'};
+  return user;
 }

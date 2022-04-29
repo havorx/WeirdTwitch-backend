@@ -35,6 +35,7 @@ const User = new Schema({
   credits: {
     type: Number,
     default: 0,
+    min: 0,
   },
   role: {
     type: String,

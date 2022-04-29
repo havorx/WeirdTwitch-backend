@@ -71,8 +71,14 @@ export async function signupUser(data) {
     });
     const refreshToken = getRefreshToken({_id: user._id});
     user.refreshToken.push({refreshToken});
-    const user = await user.save();
-    return {message: 'success', user};
+    await user.save();
+    return {
+      data: {
+        token, role: user.role, username: user.name, credits: user.credits,
+        userID: user._id,
+      },
+      message: 'success',
+    };
   }
 }
 
@@ -104,8 +110,8 @@ export async function loginUser(data) {
 }
 
 export async function logoutUser(data) {
-  const {refreshToken} = data;
-  const user = await User.findById(data.user._id).exec();
+  const {refreshToken, userID} = data;
+  const user = await User.findById(userID).exec();
   if (user) {
     const tokenIndex = user.refreshToken.findIndex(
         item => item.refreshToken === refreshToken);

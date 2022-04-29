@@ -16,6 +16,7 @@ export async function signupUser(req, res, next) {
     const result = await authService.signupUser(data);
     return res.status(200).send(result);
   } catch (err) {
+    console.log(err);
     res.status(500).send(err);
   }
 }
@@ -24,7 +25,10 @@ export async function loginUser(req, res, next) {
   try {
     const data = req.user;
     const result = await authService.loginUser(data);
-    return res.status(result.status).send(result);
+    if (result.status !== 200) {
+      return res.status(result.status).send(result.message);
+    }
+    return res.status(result.status).send(result.data);
   } catch (err) {
     res.status(500).send(err);
   }

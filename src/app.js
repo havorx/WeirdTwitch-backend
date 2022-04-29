@@ -4,13 +4,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import initializeStrategy from './auth/PassportStrategy.js';
-import connect from './config/database.js';
+import connectDB from './config/database.js';
 
 import route from './routes.js';
 
 // Connect db
 
-connect();
+connectDB();
 
 const app = express();
 
@@ -35,8 +35,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-/*const __dirname = path.resolve(path.dirname(''));
-app.use(express.static(path.join(__dirname, 'public')));*/
 
 // passportJS authentication
 initializeStrategy(app);
